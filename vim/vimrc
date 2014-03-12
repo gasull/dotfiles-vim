@@ -1,0 +1,338 @@
+" Respect XDG's ~/.config dir
+set directory=$XDG_CACHE_HOME/vim,~/,/tmp
+set backupdir=$XDG_CACHE_HOME/vim,~/,/tmp
+set viminfo+=n$XDG_CACHE_HOME/vim/viminfo
+set runtimepath=$XDG_CONFIG_HOME/vim,$XDG_CONFIG_HOME/vim/after,$VIM,$VIMRUNTIME
+let $MYVIMRC="$XDG_CONFIG_HOME/vim/vimrc"
+
+" Pathogen
+runtime bundle/vim-pathogen/autoload/pathogen.vim
+execute pathogen#infect()
+execute pathogen#helptags()
+
+filetype plugin indent on
+
+" Cursor line
+set cul
+
+" http://vim.wikia.com/wiki/Great_wildmode/wildmenu_and_console_mouse
+set wildmenu
+set wildmode=list:longest,full
+
+" Easy pasting to Windows applications
+" http://vim.wikia.com/wiki/VimTip21
+set clipboard=unnamed
+
+""
+"" Set options and add mapping such that Vim behaves a lot like MS-Windows
+"" (and Gnome), from /usr/share/vim/vim71/mswin.vim
+""
+
+" backspace and cursor keys wrap to previous/next line
+set backspace=indent,eol,start whichwrap+=<,>,[,]
+
+" backspace in Visual mode deletes selection
+vnoremap <BS> d
+
+vnoremap <C-X> "+x
+" vnoremap <C-C> "+y
+map <C-V> "+gP
+cmap <C-V> <C-R>+
+
+" Use CTRL-Q to do what CTRL-V used to do
+noremap <C-Q> <C-V>
+" For the terminal:
+" NB: Overrides the Ex mode
+noremap Q <C-V>
+
+" Use CTRL-S for saving, also in Insert mode
+noremap <C-S> :update<CR>
+vnoremap <C-S> <C-C>:update<CR>
+inoremap <C-S> <C-O>:update<CR>
+
+" CTRL-Z is Undo; not in cmdline though
+"noremap <C-Z> u
+inoremap <C-Z> <C-O>u
+
+" CTRL-Y is Redo (although not repeat); not in cmdline though
+noremap <C-Y> <C-R>
+inoremap <C-Y> <C-O><C-R>
+
+" CTRL-Tab is Next window
+noremap <C-Tab> <C-W>w
+inoremap <C-Tab> <C-O><C-W>w
+cnoremap <C-Tab> <C-C><C-W>w
+onoremap <C-Tab> <C-C><C-W>w
+" CTRL-F4 is Close window
+noremap <C-F4> <C-W>c
+inoremap <C-F4> <C-O><C-W>c
+cnoremap <C-F4> <C-C><C-W>c
+onoremap <C-F4> <C-C><C-W>c
+
+"" end MS-Windows changes
+
+" My remaps
+noremap <C-F> /
+inoremap <C-F> /
+"vnoremap y "+y
+noremap <C-M-Z> <C-R>
+inoremap <C-M-Z> <C-O><C-R>
+
+" http://informationhunger.blogspot.com/2008/12/beyond-basic-vim-usage.html
+set ruler             " Show useful information on the command line
+set hlsearch          " Highlight search results. Clear with :nohl
+set expandtab         " Expand tabs to spaces
+set tabstop=4         " 4 spaces is one tab
+set shiftwidth=4      " Should be the same as tabstop
+set softtabstop=4     " Makes the spaces feel like real tabs
+set smarttab          " Backspace over expandtab
+set autoindent        " Use current indentation on next line
+set nocindent         " Don't use cindent
+set nosmartindent     " Don't break filetype indent scripts
+
+" Wrap text like Cream editor
+set linebreak
+set breakat=\ -
+set wrap
+
+nnoremap <F5> :NERDTreeToggle<CR>
+nnoremap <F6> :TlistToggle<CR>
+
+" To replace every CR with LF (when searching, \r matches CR, but when replacing, \r inserts LF):
+command Dos2Unix %s/\r/\r/g
+
+set mouse=a
+set laststatus=2
+
+filetype plugin on
+
+"" From http://vim.wikia.com/wiki/Restore_cursor_to_file_position_in_previous_editing_session
+" Tell vim to remember certain things when we exit
+"  '10 : marks will be remembered for up to 10 previously edited files
+"  "100 : will save up to 100 lines for each register
+"  :20 : up to 20 lines of command-line history will be remembered
+"  % : saves and restores the buffer list
+"  n... : where to save the viminfo files
+set viminfo='10,\"100,:20,%,n~/.viminfo
+
+" when we reload, tell vim to restore the cursor to the saved position
+augroup JumpCursorOnEdit
+ au!
+ autocmd BufReadPost *
+ \ if expand("<afile>:p:h") !=? $TEMP |
+ \ if line("'\"") > 1 && line("'\"") <= line("$") |
+ \ let JumpCursorOnEdit_foo = line("'\"") |
+ \ let b:doopenfold = 1 |
+ \ if (foldlevel(JumpCursorOnEdit_foo) > foldlevel(JumpCursorOnEdit_foo - 1)) |
+ \ let JumpCursorOnEdit_foo = JumpCursorOnEdit_foo - 1 |
+ \ let b:doopenfold = 2 |
+ \ endif |
+ \ exe JumpCursorOnEdit_foo |
+ \ endif |
+ \ endif
+ " Need to postpone using "zv" until after reading the modelines.
+ autocmd BufWinEnter *
+ \ if exists("b:doopenfold") |
+ \ exe "normal zv" |
+ \ if(b:doopenfold > 1) |
+ \ exe "+".1 |
+ \ endif |
+ \ unlet b:doopenfold |
+ \ endif
+augroup END
+
+" Highlights text after column 80 when the file is writable.
+" From http://vim.wikia.com/wiki/VimTip810#Matching
+autocmd BufRead *
+    \ if !&readonly |
+    \ match ErrorMsg '\%>80v.\+' |
+    \ endif
+
+" Shows all white spaces as a character.
+" http://stackoverflow.com/questions/1675688/make-vim-show-all-white-spaces-as-a-character/1675752#1675752
+autocmd BufRead *
+    \ if !&readonly |
+    \ set list |
+    \ endif
+autocmd BufRead *
+    \ if !&readonly |
+    \ set listchars=eol:$,tab:>-,trail:~,extends:>,precedes:< |
+    \ endif
+
+" relativenumber changes Vim’s line number column to display how far away each
+" line is from the current one, instead of showing the absolute line number.
+" after you close and reopen a file.
+autocmd BufRead *
+    \ if !&readonly |
+    \ set relativenumber |
+    \ endif
+
+"" http://nvie.com/posts/how-i-boosted-my-vim/
+set incsearch     " show search matches as you type
+
+" ignorecase and smartcase together make Vim deal with case-sensitive search
+" intelligently. If you search for an all-lowercase string your search will be
+" case-insensitive, but if one or more characters is uppercase the search will
+" be case-sensitive. Most of the time this does what you want.
+set ignorecase
+set smartcase
+
+" You can temporarily switch to “paste mode”, simply by setting the following
+" option:
+set pastetoggle=<F2>
+
+" Easy window navigation
+map <C-h> <C-w>h
+map <C-j> <C-w>j
+map <C-k> <C-w>k
+map <C-l> <C-w>l
+
+" If you like long lines with line wrapping enabled, this solves the problem
+" that pressing down jumps your cursor “over” the current line to the next
+" line. It changes behaviour so that it jumps to the next row in the editor
+" (much more natural):
+nnoremap j gj
+nnoremap k gk
+
+"" http://stevelosh.com/blog/2010/09/coming-home-to-vim/#using-the-leader
+" The modelines bit prevents some security exploits having to do with modelines
+" in files. I never use modelines so I don’t miss any functionality here.
+set modelines=0
+
+" undofile tells Vim to create <FILENAME>.un~ files whenever you edit a file.
+" These files contain undo information so you can undo previous actions even
+" after you close and reopen a file.
+set undofile
+
+let mapleader = ","
+
+" fix Vim’s horribly broken default regex “handling” by automatically inserting
+" a \v before any string you search for. This turns off Vim’s crazy default
+" regex characters and makes searches use normal regexes. I already know
+" Perl/Python compatible regex formatting, why would I want to learn another
+" scheme?
+nnoremap / /\v
+vnoremap / /\v
+
+" gdefault applies substitutions globally on lines. For example, instead of
+" :%s/foo/bar/g you just type :%s/foo/bar/. This is almost always what you want
+" (when was the last time you wanted to only replace the first occurrence of a
+" word on a line?) and if you need the previous behavior you just tack on the g
+" again.
+set gdefault
+
+" The <leader><space> mapping makes it easy to clear out a search by typing
+" ,<space>. This gets rid of the distracting highlighting once I’ve found what
+" I’m looking for.
+nnoremap <leader><space> :noh<cr>
+
+" The last two lines make the tab key match bracket pairs. I use this to move
+" around all the time and <tab> is a hell of a lot easier to type than %.
+nnoremap <tab> %
+vnoremap <tab> %
+
+" I really like TextMate’s “save on losing focus” feature. I can’t remember a
+" time when I didn’t want to save a file after tabbing away from my editor
+au FocusLost * :wa
+
+" I work with HTML often, so I have ,ft mapped to a “fold tag” function:
+nnoremap <leader>ft Vatzf
+
+" use jj to exit back to normal mode
+inoremap jj <ESC>
+
+" makes ,w open a new vertical split and switch over to it. Because really, how
+" often do you split your window and not want to do something in the new split?
+nnoremap <leader>w <C-w>v<C-w>l
+
+
+autocmd FileType css setlocal shiftwidth=2 tabstop=2
+autocmd FileType haml setlocal shiftwidth=2 tabstop=2
+autocmd FileType html setlocal shiftwidth=2 tabstop=2
+autocmd FileType htmldjango setlocal shiftwidth=2 tabstop=2
+autocmd FileType js setlocal shiftwidth=2 tabstop=2
+" pylint.vim
+autocmd FileType python compiler pylint
+"FIXME: It screws vimdiff
+"autocmd FileType python Tlist
+autocmd FileType sass setlocal shiftwidth=2 tabstop=2
+
+
+" activates vim spellchecker. Use ']s' and '[s' to move between
+"   mistakes, 'zg' adds to the dictionary, 'z=' suggests correctly spelled
+"   words
+set spell
+
+
+" fugitive
+" http://vimcasts.org/episodes/fugitive-vim-browsing-the-git-object-database/
+" The tree buffer makes it easy to drill down through the directories of your
+" git repository, but it’s not obvious how you could go up a level to the
+" parent directory. Running the following command will open the parent tree:
+" :edit %:h
+" If you want, you could create a mapping to make this easier. Here’s an
+" example, which maps .. to the above command, but only for buffers containing
+" a git blob or tree:
+autocmd User fugitive
+  \ if fugitive#buffer().type() =~# '^\%(tree\|blob\)$' |
+  \   nnoremap <buffer> .. :edit %:h<CR> |
+  \ endif
+" Each time you open a git object using fugitive it creates a new buffer. This
+" means that your buffer listing can quickly become swamped with fugitive
+" buffers.
+" Here’s an autocommand that prevents this from becomming an issue:
+autocmd BufReadPost fugitive://* set bufhidden=delete
+" Shows your current git branch
+set statusline=%<%f\ %h%m%r%{fugitive#statusline()}%=%-14.(%l,%c%V%)\ %P
+
+
+" http://www.codeography.com/2013/06/17/replacing-all-the-things-with-unite-vim.html
+" Unite
+let g:unite_source_history_yank_enable = 1
+call unite#filters#matcher_default#use(['matcher_fuzzy'])
+nnoremap <leader>f :Unite -buffer-name=files   -start-insert file<cr>
+nnoremap <leader>r :Unite -buffer-name=mru     -start-insert file_mru<cr>
+nnoremap <leader>o :Unite -buffer-name=outline -start-insert outline<cr>
+nnoremap <leader>y :Unite -buffer-name=yank    history/yank<cr>
+nnoremap <leader>e :Unite -buffer-name=buffer  buffer<cr>
+" Custom mappings for the unite buffer
+autocmd FileType unite call s:unite_settings()
+function! s:unite_settings()
+  " Play nice with supertab
+  let b:SuperTabDisabled=1
+  " Enable navigation with control-j and control-k in insert mode
+  imap <buffer> <C-j>   <Plug>(unite_select_next_line)
+  imap <buffer> <C-k>   <Plug>(unite_select_previous_line)
+endfunction
+
+" gVim
+hi Normal guibg=#000022 guifg=#ffff99
+set guifont=Inconsolata\ 15
+
+
+"" http://statico.github.io/vim.html
+
+" Vim automatically creates a buffer for each file on the command line. This
+" is useful from the command line, such as with vim *.js, or combined with
+" grep/ack: vim `grep -l foo *.js`. I use this pattern so often that I bound
+" two keys to cycle between all open buffers:
+nmap <C-n> :bnext<CR>
+" If you use Vim buffers, Ctrl-P’s ability to quickly go to the buffer you
+" want is life-changing. It’s so useful that I’ve bound it to ; (and nobody
+" remembers what ; does anyway). Ctrl-P’s file search combined with buffer
+" search is magnificent – use the file search to open files related to the
+" task at hand, then use buffer search to flip in between them.
+nmap ; :CtrlPBuffer<CR>
+
+
+" Solarized
+if !has('gui_running')
+  let g:solarized_termcolors=256
+  let g:solarized_termtrans=1
+endif
+syn on
+colorscheme solarized
+set bg=dark
+call togglebg#map("<F4>")
+
+map <leader>td <Plug>TaskList
