@@ -1,0 +1,16 @@
+#!/usr/bin/env python
+# update-bundle
+# Updates plugins in ~/.config/vim/bundle
+#
+# Author: Daniel Gonzalez Gasull
+
+import git
+import os
+
+
+os.chdir('bundle')
+for dir in os.listdir('.'):
+    if os.path.isdir(dir):
+        repo = git.cmd.Git(dir)
+        print('Updating %s:' % repo.working_dir)
+        print(repo.pull())

@@ -16,6 +16,7 @@ If ~/.vim exists, delete it after backing it up.
     ln -s .config/vim .vim
     sudo aptitude install vim-youcompleteme
     vim-addon-manager install youcompleteme
+    sudo aptitude install python-git
     cd .config/vim
     git clone https://github.com/Lokaltog/powerline.git
     git clone https://github.com/Shougo/neomru.vim.git
