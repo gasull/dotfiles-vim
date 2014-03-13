@@ -18,6 +18,8 @@ If ~/.vim exists, delete it after backing it up.
     vim-addon-manager install youcompleteme
     sudo aptitude install python-git
     cd .config/vim
+    mkdir bundle
+    cd bundle
     git clone https://github.com/Lokaltog/powerline.git
     git clone https://github.com/Shougo/neomru.vim.git
     git clone https://github.com/Shougo/unite.vim.git
