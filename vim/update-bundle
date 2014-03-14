@@ -9,8 +9,8 @@ import os
 
 
 os.chdir('bundle')
-for dir in os.listdir('.'):
-    if os.path.isdir(dir):
-        repo = git.cmd.Git(dir)
+for directory in os.listdir('.'):
+    if os.path.isdir(directory):
+        repo = git.cmd.Git(directory)
         print('Updating %s:' % repo.working_dir)
         print(repo.pull())
