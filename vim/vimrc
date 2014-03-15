@@ -167,6 +167,10 @@ autocmd BufRead *
     \ set relativenumber |
     \ endif
 
+" http://vim.wikia.com/wiki/Remove_unwanted_spaces#Automatically_removing_all_trailing_whitespace
+" Automatically removing all trailing whitespace
+autocmd BufWritePre * :%s/\s\+$//e
+
 "" http://nvie.com/posts/how-i-boosted-my-vim/
 set incsearch     " show search matches as you type
 
