@@ -8,7 +8,8 @@ import git
 import os
 
 
-os.chdir('bundle')
+os.chdir(os.path.expanduser('~'))
+os.chdir('.config/vim/bundle')
 for directory in os.listdir('.'):
     if os.path.isdir(directory):
         repo = git.cmd.Git(directory)
