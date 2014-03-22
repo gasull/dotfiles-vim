@@ -7,16 +7,15 @@ My ~/.vim and  ~/.vimrc
 
     cd ~/.config
     mkdir vim
-    
+
 Now download dotfiles-vim and copy its vim/ content into ~/.config/vim.
 
 If ~/.vim exists, delete it after backing it up.
-    
+
     cd ~
     ln -s .config/vim .vim
     sudo aptitude install vim-youcompleteme
     vim-addon-manager install youcompleteme
-    sudo aptitude install python-git
     cd .config/vim
     mkdir bundle
     cd bundle
