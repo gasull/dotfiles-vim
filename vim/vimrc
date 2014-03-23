@@ -71,9 +71,6 @@ onoremap <C-F4> <C-C><C-W>c
 
 "" end MS-Windows changes
 
-" My remaps
-noremap <C-F> /
-inoremap <C-F> /
 "vnoremap y "+y
 noremap <C-M-Z> <C-R>
 inoremap <C-M-Z> <C-O><C-R>
