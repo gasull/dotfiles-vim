@@ -336,7 +336,7 @@ map <leader>td <Plug>TaskList
 
 
 " Syntastic for Django files
-autocmd BufRead *
+autocmd FileType python
     \ if search('^from django', 'npw') |
     \ let g:syntastic_python_pylint_args="--rcfile=$XDG_CONFIG_HOME/pylint/django.pylintrc" |
     \ endif
