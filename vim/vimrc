@@ -333,3 +333,9 @@ set bg=dark
 call togglebg#map("<F4>")
 
 map <leader>td <Plug>TaskList
+
+
+" Syntastic for Django files
+if search('^from django', 'npw')
+  let g:syntastic_python_pylint_args='--rcfile="$XDG_CONFIG_HOME/pylint/django.pylintrc"'
+endif

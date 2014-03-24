@@ -41,6 +41,13 @@ If ~/.vim exists, delete it after backing it up.
     git clone https://github.com/vim-scripts/TaskList.vim.git
     git clone https://github.com/vim-scripts/taglist.vim.git
 
+Install
+[Python syntax checkers for Syntastic](https://github.com/scrooloose/syntastic/wiki/Syntax-Checkers):
+
+    sudo aptitude install flake8 pep8 pyflakes pylint
+
+Install [pylint-django](https://github.com/landscapeio/pylint-django).
+
 Optional (at this moment, only available in Debian Testing, but you can use
 [apt-pinning](https://wiki.debian.org/AptPreferences#Pinning)):
 
