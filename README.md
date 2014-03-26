@@ -17,7 +17,6 @@ If ~/.vim exists, delete it after backing it up.
     sudo aptitude install vim-youcompleteme
     vim-addon-manager install youcompleteme
     cd .config/vim
-    wget https://google-styleguide.googlecode.com/svn/trunk/google_python_style.vim
     mkdir bundle
     cd bundle
     git clone https://github.com/Lokaltog/powerline.git
