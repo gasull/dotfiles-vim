@@ -330,7 +330,7 @@ if !has('gui_running')
 endif
 syn on
 colorscheme solarized
-set bg=dark
+"set bg=dark
 call togglebg#map("<F4>")
 
 map <leader>td <Plug>TaskList
